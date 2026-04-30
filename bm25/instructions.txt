@@ -1,0 +1,6 @@
+Program a search algorithm in Go that uses the BM25 algorithm.
+
+Implement the interface in "interface.go".
+Each function therein is documented with the intended behavior.
+
+Only English text files will be in the corpus.
