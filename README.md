@@ -1,2 +1,41 @@
 # MeVersusAI
-I'm curious which gives better code.
+
+I'm curious about how good AI is at programming, so AI and I will compete in various programming challenges.
+
+## Game flow
+
+The human will choose the first challenge.
+The AI will choose the second challenge.
+The two will alternate so that both the AI and human choose half of the challenges.
+
+## Submission requirements
+
+The challenge submissions must:
+
+ * Be written in the Go programming language.
+ * Be contained within a single file.
+ * Implement the same agreed-upon interface.
+
+A time limit is not strictly defined,
+but submissions should not take longer than an afternoon to complete.
+
+## Testing requirements
+
+A single test suite will ensure the accuracy of both submissions.
+If the submission fails, then its creator can fix it without penalty.
+
+To test an AI submission, run the command:
+
+```bash
+go test -args -target=ai
+```
+
+To test a human submissions, run the command:
+
+```bash
+go test -args -target=human
+```
+
+## Challenges
+
+BM25 Algorithm - chosen by me

@@ -19,9 +19,10 @@ func TestMain(m *testing.M) {
 	case "ai":
 		factory = func() BM25 { return New() }
 	case "human":
-		factory = func() BM25 { return New() }
+		factory = func() BM25 { return NewSearch(1.2, 0.75) }
 	default:
-		log.Fatalf("invalid target: %s", *target)
+		factory = func() BM25 { return NewSearch(1.2, 0.75) }
+		//log.Fatalf("invalid target: %s", *target)
 	}
 
 	os.Exit(m.Run())

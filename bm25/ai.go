@@ -100,12 +100,10 @@ func (e *Engine) Search(query string) []string {
 
 	for _, doc := range e.docs {
 		score := e.score(doc, queryFreq)
-		if score > 0 {
-			results = append(results, result{
-				name:  doc.name,
-				score: score,
-			})
-		}
+		results = append(results, result{
+			name:  doc.name,
+			score: score,
+		})
 	}
 
 	sort.Slice(results, func(i, j int) bool {
