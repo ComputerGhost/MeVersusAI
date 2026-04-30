@@ -18,7 +18,8 @@ func TestMain(m *testing.M) {
 	case "human":
 		factory = func() Scheduler { return NewHumanScheduler() }
 	default:
-		panic("invalid target: " + *target)
+		factory = func() Scheduler { return NewHumanScheduler() }
+		//panic("invalid target: " + *target)
 	}
 
 	os.Exit(m.Run())
@@ -75,7 +76,12 @@ func TestOrderIndependentTasksUseLexicographicTieBreak(t *testing.T) {
 	assertOrder(t, s, []string{"alpha", "middle", "zeta"})
 }
 
-func TestOrderComplexGraphIsDeterministic(t *testing.T) {
+// AI wrote this test, but it seems to be for a depth-first algorithm, which is
+// not the algorithm suggested in the instructions. When confronted about this,
+// it agreed that it was wrong and generated TestOrderComplexGraph. When told
+// that this new function loses the deterministic testing, it then generated
+// this function again and said it solves both problems. It does not.
+func _TestOrderComplexGraphIsDeterministic(t *testing.T) {
 	s := factory()
 
 	mustAdd(t, s, "lint")
@@ -95,6 +101,42 @@ func TestOrderComplexGraphIsDeterministic(t *testing.T) {
 		"security-scan",
 		"deploy",
 	})
+}
+
+func TestOrderComplexGraph(t *testing.T) {
+	s := factory()
+
+	mustAdd(t, s, "lint")
+	mustAdd(t, s, "compile")
+	mustAdd(t, s, "unit", "compile")
+	mustAdd(t, s, "integration", "compile")
+	mustAdd(t, s, "package", "integration", "unit")
+	mustAdd(t, s, "security-scan", "package")
+	mustAdd(t, s, "deploy", "lint", "package", "security-scan")
+
+	order, err := s.Order()
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	assertContainsAll(t, order, []string{
+		"lint",
+		"compile",
+		"unit",
+		"integration",
+		"package",
+		"security-scan",
+		"deploy",
+	})
+
+	assertBefore(t, order, "compile", "unit")
+	assertBefore(t, order, "compile", "integration")
+	assertBefore(t, order, "unit", "package")
+	assertBefore(t, order, "integration", "package")
+	assertBefore(t, order, "package", "security-scan")
+	assertBefore(t, order, "lint", "deploy")
+	assertBefore(t, order, "package", "deploy")
+	assertBefore(t, order, "security-scan", "deploy")
 }
 
 func TestAddTaskRejectsEmptyTaskName(t *testing.T) {
@@ -158,7 +200,14 @@ func TestAddTaskReplacesExistingTaskDependencies(t *testing.T) {
 	mustAdd(t, s, "test", "compile")
 	mustAdd(t, s, "test", "lint")
 
-	assertOrder(t, s, []string{"compile", "lint", "test"})
+	order, err := s.Order()
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	assertContainsAll(t, order, []string{"compile", "lint", "test"})
+	assertBefore(t, order, "compile", "test")
+	assertBefore(t, order, "lint", "test")
 }
 
 func TestAddTaskValidationFailureLeavesExistingTaskUnchanged(t *testing.T) {
@@ -265,4 +314,53 @@ func sameStrings(a, b []string) bool {
 	}
 
 	return true
+}
+
+func assertBefore(t *testing.T, order []string, before string, after string) {
+	t.Helper()
+
+	beforeIndex := -1
+	afterIndex := -1
+
+	for i, name := range order {
+		switch name {
+		case before:
+			beforeIndex = i
+		case after:
+			afterIndex = i
+		}
+	}
+
+	if beforeIndex == -1 {
+		t.Fatalf("expected %q to appear in order %v", before, order)
+	}
+
+	if afterIndex == -1 {
+		t.Fatalf("expected %q to appear in order %v", after, order)
+	}
+
+	if beforeIndex >= afterIndex {
+		t.Fatalf("expected %q to appear before %q in order %v", before, after, order)
+	}
+}
+
+func assertContainsAll(t *testing.T, order []string, expected []string) {
+	t.Helper()
+
+	seen := make(map[string]int, len(order))
+	for _, name := range order {
+		seen[name]++
+	}
+
+	for _, name := range expected {
+		if seen[name] == 0 {
+			t.Fatalf("expected %q to appear in order %v", name, order)
+		}
+	}
+
+	for name, count := range seen {
+		if count > 1 {
+			t.Fatalf("expected %q to appear only once in order %v", name, order)
+		}
+	}
 }

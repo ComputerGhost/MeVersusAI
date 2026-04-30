@@ -1,5 +1,5 @@
 package scheduler
 
-func NewAIScheduler() *Scheduler {
+func NewAIScheduler() Scheduler {
 	panic("not implemented")
 }
