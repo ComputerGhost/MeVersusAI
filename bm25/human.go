@@ -37,6 +37,7 @@ func NewSearch(k1 float64, b float64) *Search {
 }
 
 func (s *Search) Add(name, contents string) {
+	// note: The human did not consider the edge case of adding a document twice.
 	tokens := Tokenize(contents)
 	s.corpus.Add(name, NewDocument(tokens))
 }

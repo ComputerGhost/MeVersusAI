@@ -1,0 +1,28 @@
+AI's code bad:
+ - functions are long and complicated
+ - algorithm is neither named nor explained
+ - free parameters k1 and b are not explained
+
+AI's code neutral but notable:
+ - A regex is used for the tokenizer
+
+AI's code good:
+ - very defensive programming, unlikely to crash
+
+Human's code bad:
+ - does not handle edge case of adding a document twice
+
+Human's code neutral but notable:
+ - A library is used for the tokenizer
+
+Human's code good:
+ - code is organized by concern (document, corpus, algorithm)
+ - free parameters are explained
+
+Final thoughts:
+
+The AI's code is defensive and unlikely to break, but it is lacking in clarity and maintainability.
+
+The human's code is far more readable, but it would have benefited from more defensive coding techniques.
+
+Interestingly, the strength of each counteracts the weakness of the other. A joint effort may yield perfection.
