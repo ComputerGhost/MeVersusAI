@@ -8,6 +8,11 @@ The human will choose the first challenge.
 The AI will choose the second challenge.
 The two will alternate so that both the AI and human choose half of the challenges.
 
+**Result so far:** I have noticed that our strengths and weaknesses are exact opposites.
+My code is clear and easy to maintain but makes some assumptions about the sanity of its users.
+AI's code is less organized and harder to follow, but it includes checks for weird inputs.
+I suspect that a team effort may yield near perfection.
+
 ## Submission requirements
 
 The challenge submissions must:
