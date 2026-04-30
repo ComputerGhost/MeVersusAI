@@ -1,0 +1,26 @@
+AI's code bad:
+ - functions are long and complicated
+ - algorithm is not explained
+ - value and pointer receivers are mixed, contrary to Go's recommendation
+
+AI's code neutral but notable:
+ - a min heap is used to manage the ordering
+
+AI's code good:
+ - very defensive programming, unlikely to crash
+
+Human's code bad:
+ - may not handle duplicate dependencies
+ - may not handle dependency of deleted task
+
+Human's code good:
+ - easier to read and follow
+ - well-documented without over-commenting
+
+Final thoughts:
+
+The AI's code is robust but is lacking clarity.
+
+The human's code is far more readable, but it does not handle some edge cases.
+
+Interestingly, again, the strength of each counteracts the weakness of the other. A joint effort may yield perfection.

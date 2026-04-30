@@ -18,7 +18,7 @@ func TestMain(m *testing.M) {
 	case "human":
 		factory = func() Scheduler { return NewHumanScheduler() }
 	default:
-		factory = func() Scheduler { return NewHumanScheduler() }
+		factory = func() Scheduler { return NewAIScheduler() }
 		//panic("invalid target: " + *target)
 	}
 
