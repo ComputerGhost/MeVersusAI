@@ -1,0 +1,120 @@
+Challenge: Topological Task Scheduler
+
+Goal
+-----
+Implement a small dependency scheduler that returns a valid execution order for named tasks.
+
+This challenge is intended to test graph modeling, deterministic ordering, cycle detection, and clear handling of invalid input. The implementation should be practical and readable rather than overly clever.
+
+Language / File Requirements
+----------------------------
+- The submission must be written in Go.
+- The submission must be contained within a single file.
+- The submission must implement the interface defined below.
+- The implementation may use only the Go standard library.
+
+Problem Description
+-------------------
+You are given a set of tasks. Each task has:
+
+- A unique name.
+- Zero or more dependency names.
+
+A task may only run after all of its dependencies have run.
+
+The scheduler should return the names of all tasks in a valid execution order.
+
+Interface
+---------
+
+type Scheduler interface {
+	AddTask(name string, dependencies ...string) error
+	RemoveTask(name string)
+	Order() ([]string, error)
+}
+
+The implementation should provide a constructor:
+
+func New() Scheduler
+
+Behavior
+--------
+
+AddTask(name string, dependencies ...string) error
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Adds or replaces a task.
+
+Rules:
+- name must not be empty.
+- dependency names must not be empty.
+- dependencies must refer to tasks that have already been added.
+- a task may not depend on itself.
+- duplicate dependency names should be treated as a single dependency.
+- if a task with the same name already exists, this call replaces its dependency list.
+- if validation fails, the scheduler must remain unchanged.
+
+RemoveTask(name string)
+~~~~~~~~~~~~~~~~~~~~~~~
+Removes a task if it exists.
+
+Rules:
+- Removing a missing task is a no-op.
+- Removing a task does not automatically remove or modify tasks that depend on it.
+- If other tasks still depend on the removed task, Order() should later report an error because the graph contains a missing dependency.
+
+Order() ([]string, error)
+~~~~~~~~~~~~~~~~~~~~~~~~~
+Returns all task names in a valid execution order.
+
+Rules:
+- Every added task must appear exactly once in the returned slice.
+- A task must always appear after its dependencies.
+- If multiple tasks are eligible to run at the same time, choose the lexicographically smallest task name first.
+- The returned order must therefore be deterministic.
+- If the graph contains a cycle, return a non-nil error.
+- If the graph references a missing dependency, return a non-nil error.
+- If there are no tasks, return an empty slice and nil error.
+
+Example
+-------
+
+Given these tasks:
+
+- compile has no dependencies
+- test depends on compile
+- package depends on compile
+- deploy depends on package and test
+
+A valid deterministic order is:
+
+compile, package, test, deploy
+
+package comes before test because both become available after compile, and "package" is lexicographically smaller than "test".
+
+Suggested Error Handling
+------------------------
+The exact error text is not part of the contract. Tests should only require that an error is or is not returned.
+
+Implementation Notes
+--------------------
+A typical implementation will use Kahn's algorithm for topological sorting:
+
+1. Track each task's dependencies.
+2. Track reverse edges from dependency to dependent tasks.
+3. Start with all tasks that have zero unresolved dependencies.
+4. Repeatedly select the lexicographically smallest available task.
+5. Remove its outgoing edges.
+6. If tasks remain unresolved, report a cycle.
+
+This is only guidance. Any correct implementation is acceptable.
+
+Out of Scope
+------------
+The implementation does not need to support:
+
+- Concurrent access.
+- Weighted tasks.
+- Priorities other than lexicographic tie-breaking.
+- Partial ordering for a subset of tasks.
+- Persistence.
+- External packages.

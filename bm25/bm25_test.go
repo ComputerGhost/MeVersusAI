@@ -21,8 +21,7 @@ func TestMain(m *testing.M) {
 	case "human":
 		factory = func() BM25 { return NewSearch(1.2, 0.75) }
 	default:
-		factory = func() BM25 { return NewSearch(1.2, 0.75) }
-		//log.Fatalf("invalid target: %s", *target)
+		panic("invalid target: " + *target)
 	}
 
 	os.Exit(m.Run())

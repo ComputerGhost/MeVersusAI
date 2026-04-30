@@ -38,4 +38,6 @@ go test -args -target=human
 
 ## Challenges
 
-BM25 Algorithm - chosen by me
+ * BM25 Algorithm (path: "/bm25") - chosen by me
+ * Topological Task Scheduler (path: "/scheduler") - chosen by AI
+
